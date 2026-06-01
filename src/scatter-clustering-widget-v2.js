@@ -122,7 +122,10 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
 
     _extractPoints() {
       var db = this.dataBinding;
-      if (!db) return [];
+      if (!db) {
+        this._showError('Bitte Datenmodell verbinden:\nDimension (Label), Measure X, Measure Y, Measure Größe');
+        return [];
+      }
       var rows = Array.isArray(db.data)      ? db.data
                : Array.isArray(db.rows)      ? db.rows
                : Array.isArray(db.result)    ? db.result
