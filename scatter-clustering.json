@@ -1,6 +1,6 @@
 {
   "id": "com.custom.scatterclustering",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "name": "ScatterClustering",
   "description": "Bubble Chart mit automatischem K-Means Clustering fuer SAP Analytics Cloud",
   "newInstancePrefix": "ScatterClustering",
@@ -10,7 +10,7 @@
     {
       "kind": "main",
       "tag": "com-custom-scatterclustering",
-      "url": "https://Mabo2807.github.io/Test_Scatterpoint/src/scatter-clustering-widget.js",
+      "url": "https://Mabo2807.github.io/Test_Scatterpoint/src/scatter-clustering-widget-v2.js",
       "integrity": "",
       "ignoreIntegrity": true
     }
