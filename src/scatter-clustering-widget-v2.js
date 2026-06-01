@@ -143,17 +143,18 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
       console.log('[Scatter] rows:', rows ? rows.length : 'null', rows && rows[0]);
       if (!rows || rows.length === 0) return [];
 
-      // Echte Spalten-IDs aus SAC-Metadaten lesen
+      // Echte Spalten-IDs aus SAC-Metadaten lesen (SAC haengt _0 an Feed-IDs an)
       var feeds = db.metadata && db.metadata.feeds;
       function feedKey(name) {
-        return feeds && feeds[name] && feeds[name].values && feeds[name].values[0]
-          ? feeds[name].values[0].id
-          : name;
+        var fromMeta = feeds && feeds[name] && feeds[name].values && feeds[name].values[0]
+          ? feeds[name].values[0].id : null;
+        return fromMeta || (name + '_0');
       }
       var labelKey = feedKey('labelDimension');
       var xKey     = feedKey('measureX');
       var yKey     = feedKey('measureY');
       var sizeKey  = feedKey('measureSize');
+      console.log('[Scatter] keys:', labelKey, xKey, yKey, sizeKey);
 
       return rows.map(function (row) {
         return {
