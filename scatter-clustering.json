@@ -1,6 +1,6 @@
 {
   "id": "com.custom.scatterclustering",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "name": "ScatterClustering",
   "description": "Bubble Chart mit automatischem K-Means Clustering fuer SAP Analytics Cloud",
   "newInstancePrefix": "ScatterClustering",

@@ -122,15 +122,18 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
 
     _extractPoints() {
       var db = this.dataBinding;
+      console.log('[Scatter] dataBinding:', db);
       if (!db) {
         this._showError('Bitte Datenmodell verbinden:\nDimension (Label), Measure X, Measure Y, Measure Groesse');
         return [];
       }
+      console.log('[Scatter] metadata:', db.metadata);
       var rows = Array.isArray(db.data)      ? db.data
                : Array.isArray(db.rows)      ? db.rows
                : Array.isArray(db.result)    ? db.result
                : Array.isArray(db.resultSet) ? db.resultSet
                : null;
+      console.log('[Scatter] rows:', rows ? rows.length : 'null', rows && rows[0]);
       if (!rows || rows.length === 0) return [];
 
       // Echte Spalten-IDs aus SAC-Metadaten lesen
@@ -270,6 +273,8 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
     }
 
     onCustomWidgetAfterUpdate(changedProperties) {
+      console.log('[Scatter] onCustomWidgetAfterUpdate, changedProperties:', changedProperties);
+      console.log('[Scatter] this.dataBinding at update:', this.dataBinding);
       if (this._chart) this._render();
     }
 
