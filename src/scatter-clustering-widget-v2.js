@@ -156,10 +156,14 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
       var sizeKey  = feedKey('measureSize');
       console.log('[Scatter] keys:', labelKey, xKey, yKey, sizeKey);
       if (rows[0]) {
-        console.log('[Scatter] row[0] label:', JSON.stringify(rows[0][labelKey]));
-        console.log('[Scatter] row[0] x:', JSON.stringify(rows[0][xKey]));
-        console.log('[Scatter] row[0] y:', JSON.stringify(rows[0][yKey]));
-        console.log('[Scatter] row[0] size:', JSON.stringify(rows[0][sizeKey]));
+        var r0 = rows[0];
+        var xv = r0[xKey]; var yv = r0[yKey]; var lv = r0[labelKey]; var sv = r0[sizeKey];
+        console.log('[Scatter] xKey='+xKey+' type='+typeof xv+' val='+xv);
+        console.log('[Scatter] yKey='+yKey+' type='+typeof yv+' val='+yv);
+        console.log('[Scatter] labelKey='+labelKey+' type='+typeof lv+' val='+lv);
+        console.log('[Scatter] sizeKey='+sizeKey+' type='+typeof sv+' val='+sv);
+        if (xv && typeof xv === 'object') console.log('[Scatter] x keys:', Object.keys(xv).join(','));
+        if (lv && typeof lv === 'object') console.log('[Scatter] label keys:', Object.keys(lv).join(','));
       }
 
       return rows.map(function (row) {
