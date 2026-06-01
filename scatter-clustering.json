@@ -1,0 +1,76 @@
+{
+  "id": "com.custom.scatterclustering",
+  "version": "1.0.0",
+  "name": "ScatterClustering",
+  "description": "Bubble Chart mit automatischem K-Means Clustering fuer SAP Analytics Cloud",
+  "newInstancePrefix": "ScatterClustering",
+  "vendor": "",
+  "icon": "",
+  "webcomponents": [
+    {
+      "kind": "main",
+      "tag": "com-custom-scatterclustering",
+      "url": "http://localhost:8080/src/scatter-clustering-widget.js",
+      "integrity": "",
+      "ignoreIntegrity": true
+    }
+  ],
+  "properties": {
+    "clusterCount": {
+      "type": "integer",
+      "description": "Anzahl der K-Means Cluster",
+      "default": 5
+    },
+    "xAxisLabel": {
+      "type": "string",
+      "description": "Beschriftung der X-Achse",
+      "default": ""
+    },
+    "yAxisLabel": {
+      "type": "string",
+      "description": "Beschriftung der Y-Achse",
+      "default": ""
+    },
+    "opacity": {
+      "type": "number",
+      "description": "Bubble-Transparenz (0.1 bis 1.0)",
+      "default": 0.6
+    }
+  },
+  "methods": {
+    "refresh": {
+      "description": "Daten neu laden und Chart neu rendern"
+    }
+  },
+  "events": {
+    "onPointClick": {
+      "description": "Gefeuert wenn ein Datenpunkt angeklickt wird"
+    }
+  },
+  "dataBindings": {
+    "dataBinding": {
+      "feeds": [
+        {
+          "id": "labelDimension",
+          "description": "Label der Datenpunkte (z.B. Kunde, Region, Produkt)",
+          "type": "dimension"
+        },
+        {
+          "id": "measureX",
+          "description": "X-Achse (z.B. Umsatz AJ)",
+          "type": "mainStructureMember"
+        },
+        {
+          "id": "measureY",
+          "description": "Y-Achse (z.B. DB AJ)",
+          "type": "mainStructureMember"
+        },
+        {
+          "id": "measureSize",
+          "description": "Bubble-Groesse (z.B. Anzahl Bestellungen)",
+          "type": "mainStructureMember"
+        }
+      ]
+    }
+  }
+}
