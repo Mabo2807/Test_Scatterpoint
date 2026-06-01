@@ -46,5 +46,58 @@
       }, 2000);
     });
   </script>
+  <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;">
+    <button onclick="testProps()">Test: 5 Cluster + Achsenlabels</button>
+    <button onclick="testEmpty()">Test: Leere Daten</button>
+    <button onclick="testFewPoints()">Test: 2 Punkte, 5 Cluster</button>
+    <button onclick="testReset()">Reset: 8 Punkte, 3 Cluster</button>
+  </div>
+  <div id="click-log" style="margin-top:12px;font-size:13px;color:#333;padding:4px;"></div>
+
+  <script>
+    var _mockData = {
+      data: [
+        { label: 'Kunde A', x: 12000000, y: 2500000,  size: 340  },
+        { label: 'Kunde B', x: 8000000,  y: 1800000,  size: 210  },
+        { label: 'Kunde C', x: 45000000, y: 11000000, size: 890  },
+        { label: 'Kunde D', x: 50000000, y: 12500000, size: 1100 },
+        { label: 'Kunde E', x: 78000000, y: 15500000, size: 1500 },
+        { label: 'Kunde F', x: 5000000,  y: 800000,   size: 120  },
+        { label: 'Kunde G', x: 38000000, y: 9000000,  size: 700  },
+        { label: 'Kunde H', x: 22000000, y: 4000000,  size: 450  },
+      ]
+    };
+
+    function testProps() {
+      var w = document.querySelector('com-custom-scatterclustering');
+      w.onCustomWidgetBeforeUpdate({ clusterCount: 5, xAxisLabel: 'Umsatz AJ', yAxisLabel: 'DB AJ', opacity: 0.55 });
+      w.onCustomWidgetAfterUpdate(_mockData);
+    }
+
+    function testEmpty() {
+      var w = document.querySelector('com-custom-scatterclustering');
+      w.onCustomWidgetAfterUpdate({ data: [] });
+    }
+
+    function testFewPoints() {
+      var w = document.querySelector('com-custom-scatterclustering');
+      w.onCustomWidgetBeforeUpdate({ clusterCount: 5 });
+      w.onCustomWidgetAfterUpdate({ data: [
+        { label: 'A', x: 100, y: 200, size: 10 },
+        { label: 'B', x: 300, y: 400, size: 20 },
+      ]});
+    }
+
+    function testReset() {
+      var w = document.querySelector('com-custom-scatterclustering');
+      w.onCustomWidgetBeforeUpdate({ clusterCount: 3, xAxisLabel: '', yAxisLabel: '', opacity: 0.6 });
+      w.onCustomWidgetAfterUpdate(_mockData);
+    }
+
+    document.addEventListener('onPointClick', function (e) {
+      document.getElementById('click-log').textContent =
+        'Geklickt: ' + JSON.stringify(e.detail);
+    });
+  </script>
 </body>
 </html>
