@@ -66,6 +66,18 @@
       this._errorMsg.style.display = 'none';
     }
 
+    _extractPoints(dataBinding) {
+      if (!dataBinding || !dataBinding.data || dataBinding.data.length === 0) return [];
+      return dataBinding.data.map(function (row) {
+        return {
+          label: String(row.label || ''),
+          x:     Number(row.x)    || 0,
+          y:     Number(row.y)    || 0,
+          size:  Number(row.size) || 0,
+        };
+      });
+    }
+
     _render() {
       // wird in Task 5 implementiert
     }
