@@ -99,6 +99,9 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
           if (this._chart) this._chart.resize();
         }.bind(this));
         this._resizeObserver.observe(this._chartRoot);
+        // SAC ruft onCustomWidgetAfterUpdate VOR connectedCallback auf
+        // daher hier nochmals rendern sobald Chart bereit ist
+        this._render();
       } catch (e) {
         this._showError('Chart konnte nicht initialisiert werden: ' + e.message);
       }
