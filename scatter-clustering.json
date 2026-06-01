@@ -10,7 +10,7 @@
     {
       "kind": "main",
       "tag": "com-custom-scatterclustering",
-      "url": "http://localhost:8080/src/scatter-clustering-widget.js",
+      "url": "https://Mabo2807.github.io/Test_Scatterpoint/src/scatter-clustering-widget.js",
       "integrity": "",
       "ignoreIntegrity": true
     }
