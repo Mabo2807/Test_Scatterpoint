@@ -155,6 +155,12 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
       var yKey     = feedKey('measureY');
       var sizeKey  = feedKey('measureSize');
       console.log('[Scatter] keys:', labelKey, xKey, yKey, sizeKey);
+      if (rows[0]) {
+        console.log('[Scatter] row[0] label:', JSON.stringify(rows[0][labelKey]));
+        console.log('[Scatter] row[0] x:', JSON.stringify(rows[0][xKey]));
+        console.log('[Scatter] row[0] y:', JSON.stringify(rows[0][yKey]));
+        console.log('[Scatter] row[0] size:', JSON.stringify(rows[0][sizeKey]));
+      }
 
       return rows.map(function (row) {
         return {
