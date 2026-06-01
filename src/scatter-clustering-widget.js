@@ -34,6 +34,14 @@
     return minPx + ((value - minVal) / (maxVal - minVal)) * (maxPx - minPx);
   }
 
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
   class ScatterClusteringWidget extends HTMLElement {
     connectedCallback() {
       if (this.shadowRoot) return;
@@ -78,7 +86,7 @@
           label: String(row.label || ''),
           x:     Number(row.x)    || 0,
           y:     Number(row.y)    || 0,
-          size:  Number(row.size) || 0,
+          size:  Math.max(0, Number(row.size) || 0),
         };
       });
     }
@@ -90,6 +98,12 @@
         this._showError('Keine Daten verfügbar');
         return;
       }
+
+      if (!window.ecStat || !window.echarts) {
+        this._showError('Bibliotheken nicht verfügbar');
+        return;
+      }
+
       this._hideError();
 
       var clusterCount = Math.min(this._props.clusterCount || 5, points.length);
@@ -165,9 +179,9 @@
           trigger: 'item',
           formatter: function (params) {
             var d = params.data.label_data;
-            return '<b>' + d.label + '</b><br/>'
-              + (xLabel || 'X') + ': ' + d.x.toLocaleString('de-DE') + '<br/>'
-              + (yLabel || 'Y') + ': ' + d.y.toLocaleString('de-DE') + '<br/>'
+            return '<b>' + escHtml(d.label) + '</b><br/>'
+              + escHtml(xLabel || 'X') + ': ' + d.x.toLocaleString('de-DE') + '<br/>'
+              + escHtml(yLabel || 'Y') + ': ' + d.y.toLocaleString('de-DE') + '<br/>'
               + 'Größe: ' + d.size.toLocaleString('de-DE');
           },
         },
