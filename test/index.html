@@ -11,5 +11,18 @@
     <com-custom-scatterclustering style="width:100%;height:100%;display:block;"></com-custom-scatterclustering>
   </div>
   <script src="../src/scatter-clustering-widget.js"></script>
+  <script>
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        if (window.echarts && window.ecStat) {
+          document.body.insertAdjacentHTML('beforeend',
+            '<p style="color:green;padding:8px">✓ ECharts und echarts-stat geladen</p>');
+        } else {
+          document.body.insertAdjacentHTML('beforeend',
+            '<p style="color:red;padding:8px">✗ Bibliotheken nicht geladen</p>');
+        }
+      }, 2000);
+    });
+  </script>
 </body>
 </html>
