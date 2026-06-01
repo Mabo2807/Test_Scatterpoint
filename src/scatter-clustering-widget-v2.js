@@ -123,7 +123,7 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
     _extractPoints() {
       var db = this.dataBinding;
       if (!db) {
-        this._showError('Bitte Datenmodell verbinden:\nDimension (Label), Measure X, Measure Y, Measure Größe');
+        this._showError('Bitte Datenmodell verbinden:\nDimension (Label), Measure X, Measure Y, Measure Groesse');
         return [];
       }
       var rows = Array.isArray(db.data)      ? db.data
@@ -132,12 +132,25 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
                : Array.isArray(db.resultSet) ? db.resultSet
                : null;
       if (!rows || rows.length === 0) return [];
+
+      // Echte Spalten-IDs aus SAC-Metadaten lesen
+      var feeds = db.metadata && db.metadata.feeds;
+      function feedKey(name) {
+        return feeds && feeds[name] && feeds[name].values && feeds[name].values[0]
+          ? feeds[name].values[0].id
+          : name;
+      }
+      var labelKey = feedKey('labelDimension');
+      var xKey     = feedKey('measureX');
+      var yKey     = feedKey('measureY');
+      var sizeKey  = feedKey('measureSize');
+
       return rows.map(function (row) {
         return {
-          label: getLabel(row.labelDimension),
-          x:     getNum(row.measureX),
-          y:     getNum(row.measureY),
-          size:  Math.max(0, getNum(row.measureSize)),
+          label: getLabel(row[labelKey]),
+          x:     getNum(row[xKey]),
+          y:     getNum(row[yKey]),
+          size:  Math.max(0, getNum(row[sizeKey])),
         };
       });
     }
