@@ -247,7 +247,10 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
     }
 
     onCustomWidgetBeforeUpdate(changedProps) {
-      Object.assign(this._props, changedProps);
+      if (!this._props) {
+        this._props = { clusterCount: 5, xAxisLabel: '', yAxisLabel: '', opacity: 0.6 };
+      }
+      if (changedProps) Object.assign(this._props, changedProps);
     }
 
     onCustomWidgetAfterUpdate(changedProperties) {
