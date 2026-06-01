@@ -84,23 +84,27 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
   }
 
   class ScatterClusteringWidget extends HTMLElement {
-    connectedCallback() {
-      if (this.shadowRoot) return;
-      this.attachShadow({ mode: 'open' });
-      this.shadowRoot.appendChild(tmpl.content.cloneNode(true));
-      this._chartRoot = this.shadowRoot.querySelector('.chart-root');
-      this._errorMsg  = this.shadowRoot.querySelector('.error-msg');
+    constructor() {
+      super();
+      // Shadow DOM im constructor aufbauen — wie KalenderHCM
+      // damit alle Elemente bereit sind bevor SAC Lifecycle-Hooks aufruft
+      this._root     = this.attachShadow({ mode: 'open' });
+      this._root.appendChild(tmpl.content.cloneNode(true));
+      this._chartRoot = this._root.querySelector('.chart-root');
+      this._errorMsg  = this._root.querySelector('.error-msg');
       this._chart     = null;
       this._props     = { clusterCount: 5, xAxisLabel: '', yAxisLabel: '', opacity: 0.6 };
+    }
 
+    connectedCallback() {
+      if (this._chart) return;
       try {
         this._chart = window.echarts.init(this._chartRoot, null, { renderer: 'canvas' });
         this._resizeObserver = new ResizeObserver(function () {
           if (this._chart) this._chart.resize();
         }.bind(this));
         this._resizeObserver.observe(this._chartRoot);
-        // SAC ruft onCustomWidgetAfterUpdate VOR connectedCallback auf
-        // daher hier nochmals rendern sobald Chart bereit ist
+        // Immer rendern — egal ob AfterUpdate schon vorher gefeuert hat oder nicht
         this._render();
       } catch (e) {
         this._showError('Chart konnte nicht initialisiert werden: ' + e.message);
@@ -276,9 +280,13 @@ var Fr={},Gr={};var Wr,Hr=function(){function t(t,e,n){var i=this;this._sleepAft
     }
 
     onCustomWidgetAfterUpdate(changedProperties) {
-      console.log('[Scatter] onCustomWidgetAfterUpdate, changedProperties:', changedProperties);
-      console.log('[Scatter] this.dataBinding at update:', this.dataBinding);
-      if (this._chart) this._render();
+      console.log('[Scatter] onCustomWidgetAfterUpdate, chart:', !!this._chart, 'db:', !!this.dataBinding);
+      if (this._chart) {
+        this._render();
+      } else {
+        // Chart noch nicht bereit — beim nächsten connectedCallback wird _render() aufgerufen
+        this._pendingRender = true;
+      }
     }
 
     onCustomWidgetResize() {
