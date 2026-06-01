@@ -29,6 +29,11 @@
     + 'font-family:sans-serif;padding:20px;"></div>'
     + '</div>';
 
+  function scaleSize(value, minVal, maxVal, minPx, maxPx) {
+    if (maxVal === minVal) return (minPx + maxPx) / 2;
+    return minPx + ((value - minVal) / (maxVal - minVal)) * (maxPx - minPx);
+  }
+
   class ScatterClusteringWidget extends HTMLElement {
     connectedCallback() {
       if (this.shadowRoot) return;
@@ -79,7 +84,105 @@
     }
 
     _render() {
-      // wird in Task 5 implementiert
+      var points = this._extractPoints(this._dataBinding);
+
+      if (points.length === 0) {
+        this._showError('Keine Daten verfügbar');
+        return;
+      }
+      this._hideError();
+
+      var clusterCount = Math.min(this._props.clusterCount || 5, points.length);
+      var opacity      = Number(this._props.opacity) || 0.6;
+      var xLabel       = this._props.xAxisLabel || '';
+      var yLabel       = this._props.yAxisLabel || '';
+
+      var xyData = points.map(function (p) { return [p.x, p.y]; });
+
+      var result = window.ecStat.clustering.hierarchicalKMeans(xyData, {
+        clusterCount: clusterCount,
+        stepByStep:   false,
+      });
+
+      var clusters = [];
+      for (var c = 0; c < clusterCount; c++) { clusters.push([]); }
+      points.forEach(function (p, i) {
+        var cid = result.clusterAssment[i][0];
+        clusters[cid].push(p);
+      });
+
+      var allSizes = points.map(function (p) { return p.size; });
+      var minSize  = Math.min.apply(null, allSizes);
+      var maxSize  = Math.max.apply(null, allSizes);
+
+      var colors = ['#5470c6','#ee6666','#91cc75','#fac858','#9b59b6',
+                    '#3ba272','#fc8452','#73c0de','#ea7ccc','#d14a61'];
+
+      var series = clusters.map(function (clusterPoints, ci) {
+        return {
+          name: 'Cluster ' + (ci + 1),
+          type: 'scatter',
+          data: clusterPoints.map(function (p) {
+            return {
+              value:      [p.x, p.y],
+              symbolSize: scaleSize(p.size, minSize, maxSize, 18, 60),
+              itemStyle:  { color: colors[ci % colors.length], opacity: opacity },
+              label_data: p,
+            };
+          }),
+        };
+      });
+
+      this._chart.setOption({
+        backgroundColor: '#ffffff',
+        legend: {
+          top: 8,
+          data: series.map(function (s) { return s.name; }),
+          textStyle: { color: '#555' },
+        },
+        grid: { left: 60, right: 20, top: 50, bottom: 50 },
+        xAxis: {
+          type: 'value',
+          name: xLabel,
+          nameLocation: 'middle',
+          nameGap: 30,
+          nameTextStyle: { color: '#555', fontSize: 11 },
+          axisLine:  { lineStyle: { color: '#ddd' } },
+          splitLine: { lineStyle: { color: '#f0f0f0' } },
+          axisLabel: { color: '#999', fontSize: 10 },
+        },
+        yAxis: {
+          type: 'value',
+          name: yLabel,
+          nameLocation: 'middle',
+          nameGap: 45,
+          nameTextStyle: { color: '#555', fontSize: 11 },
+          axisLine:  { lineStyle: { color: '#ddd' } },
+          splitLine: { lineStyle: { color: '#f0f0f0' } },
+          axisLabel: { color: '#999', fontSize: 10 },
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: function (params) {
+            var d = params.data.label_data;
+            return '<b>' + d.label + '</b><br/>'
+              + (xLabel || 'X') + ': ' + d.x.toLocaleString('de-DE') + '<br/>'
+              + (yLabel || 'Y') + ': ' + d.y.toLocaleString('de-DE') + '<br/>'
+              + 'Größe: ' + d.size.toLocaleString('de-DE');
+          },
+        },
+        series: series,
+      }, true);
+
+      this._chart.off('click');
+      this._chart.on('click', function (params) {
+        if (!params.data || !params.data.label_data) return;
+        var d = params.data.label_data;
+        this.dispatchEvent(new CustomEvent('onPointClick', {
+          bubbles: true,
+          detail: { label: d.label, x: d.x, y: d.y, size: d.size },
+        }));
+      }.bind(this));
     }
 
     onCustomWidgetBeforeUpdate(changedProps) {
